@@ -2,23 +2,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Principal</title>
+	<title>Produtos</title>
 </head>
-
 <body>
-
-	<fieldset>
-		<legend>Produto</legend>
-		<form method=get>
-			Nome <input type=text name=produtoNome><br>
-			Valor Venda <input type=text name=produtoPreco_venda maxlength=11><br>
-			<input type=submit name=produtoCadastrar value=Cadastrar>
-			<input type=submit name=produtoListar value=Listar>
-			<input type=submit name=produtoBuscar value=Buscar>
-		</form>
-	</fieldset>
-
-<?php //namespace produto;
+<?php
 
 use PDO;
 
@@ -64,15 +51,11 @@ use PDO;
 
 		public function inserir($conexaodb)
 		{
-			// mysqli
-			/*$conexaodb->query("INSERT INTO PRODUTO (nome, preco_venda) VALUES ('{$conexaodb->real_escape_string($this->nome)}', {$conexaodb->real_escape_string($this->preco_venda)})") or die(mysqli_error($conexaodb));*/
-
-			// pdo
-			$conexaodb->prepare("INSERT INTO PRODUTO (nome, preco_venda) VALUES ('{$this->nome}', {$this->preco_venda})")->execute();
+			
+			$conexaodb->prepare("INSERT INTO PRODUTO (nome, preco_venda) VALUES ('{$this->nome}', '{$this->preco_venda}')")->execute();
 			echo "Inserido com sucesso<br>";
 		}
 	}
-
 
 ?>
 	<form method=get>
@@ -81,13 +64,6 @@ use PDO;
 	function consulta($conexaodb, $orderBy)
 	{
 
-		// mysqli
-		//$consulta= $conexaodb->query("select * from PRODUTO") or die(mysqli_error($conexaodb));
-
-		// mysqli
-		//while ( $item = $consulta->fetch_assoc() )
-
-		// pdo
 		foreach ( $conexaodb->query("select * from PRODUTO {$orderBy}")->fetchAll(PDO::FETCH_ASSOC) as $item )
 		{ ?>
 				<input type=checkbox style="min-width: 10PX;" name=selecaoProdutos[] value=<?=$item['id']?>>
@@ -123,10 +99,6 @@ use PDO;
 	{
 		foreach ( $_GET['selecaoProdutos'] as $selecionados )
 		{
-			// mysqli
-			//$conexaodb->query("delete from PRODUTO where id = {$conexaodb->real_escape_string($selecionados)}");
-
-			// pdo
 			$conexaodb->prepare("delete from PRODUTO where id = {$selecionados}")->execute();
 
 		}
@@ -134,13 +106,8 @@ use PDO;
 		listar($conexaodb);
 	}
 
-	//if ( idfuncao == (dono || vendedor) )
 	elseif ( isset($_GET['deletarProduto']) )
 	{
-		// mysqli
-		//$conexaodb->query("delete from PRODUTO WHERE id = {$conexaodb->real_escape_string($_GET['idProduto'])}");
-
-		// pdo
 		$conexaodb->prepare("delete from PRODUTO WHERE id = {$_GET['idProduto']}")->execute();
 
 		listar($conexaodb);
@@ -148,26 +115,16 @@ use PDO;
 
 	elseif ( isset($_GET['editarProduto']) )
 	{
-		// mysqli
-		//$conexaodb->query("update PRODUTO set nome = '{$conexaodb->real_escape_string($_GET['nomeProduto'])}' where id = {$conexaodb->real_escape_string($_GET['idProduto'])}");
-
-		// pdo
+		
 		$conexaodb->prepare("update PRODUTO set nome = '{$_GET['nomeProduto']}' where id = {$_GET['idProduto']}")->execute();
 
 		listar($conexaodb);
 	}
 
-	// código abaixo chama as funções e métodos caso o usuário esteja autenticado
 	session_start();
 
 	if ( isset($_SESSION["idUsuario"]) && $_SESSION["usernameUsuario"] && $_SESSION["senhaUsuario"] )
 	{
-		//include_once "Produto.php";
-
-		// mysqli
-		//$p= new \produto\Produto($conexaodb->real_escape_string($_GET['produtoNome']), $conexaodb->real_escape_string($_GET['produtoPreco_venda']));
-
-		// pdo
 		$p= new \produto\Produto($_GET['produtoNome'], $_GET['produtoPreco_venda']);
 
 		if ( isset($_GET["produtoCadastrar"]) )
@@ -183,10 +140,7 @@ use PDO;
 		if ( isset($_GET["produtoBuscar"]) )
 			\produto\filtrar($conexaodb);
 
-		//mysqli_close($conexaodb);
 	}
 ?>
-
-
 </body>
 </html>

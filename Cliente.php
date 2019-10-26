@@ -8,24 +8,7 @@ use PDO;
 	class Cliente
 	{
 		private $id_cliente, $nome_cliente, $cpf_cliente, $tel_cliente, $end_cliente;
-
-		/*function __construct(...$parametros)
-		{
-			switch ( count($parametros) )
-			{
-				case 0:
-					$this->nome_cliente= $parametros[0];
-					$this->cpf_cliente= $parametros[1];
-					$this->tel_cliente= $parametros[2];
-					$this->end_cliente=$parametros[3];
-					echo "passou";
-
-				break;
-
-				default:
-					echo "Objeto criado com quantidade incompatível de parâmetros";
-			}
-			*/
+		
 		}
 
 		function __set($atributo, $valor)
