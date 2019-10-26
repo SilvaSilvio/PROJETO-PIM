@@ -10,7 +10,7 @@ include_once 'db.inc';
 	foreach ( $conexaodb->query("select * from USUARIO")->fetchAll(PDO::FETCH_ASSOC) as $usuario )
 		if ( $_GET["usernameUsuario"] == $usuario["username"] && $_GET["senhaUsuario"] == $usuario["senha"] )
 		{
-			header("Location: Produto.php");
+			header("Location: produto.html");
 
 			session_start();
 			$_SESSION["idUsuario"]= $usuario["id"];

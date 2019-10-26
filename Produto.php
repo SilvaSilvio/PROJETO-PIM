@@ -14,6 +14,7 @@
 			Valor Venda <input type=text name=produtoPreco_venda maxlength=11><br>
 			<input type=submit name=produtoCadastrar value=Cadastrar>
 			<input type=submit name=produtoListar value=Listar>
+			<input type=submit name=produtoBuscar value=Buscar>
 		</form>
 	</fieldset>
 
@@ -68,17 +69,18 @@ use PDO;
 
 			// pdo
 			$conexaodb->prepare("INSERT INTO PRODUTO (nome, preco_venda) VALUES ('{$this->nome}', {$this->preco_venda})")->execute();
-
 			echo "Inserido com sucesso<br>";
 		}
 	}
 
 
-?>	<form method=get>
+?>
+	<form method=get>
 		<div>
 <?php
-	function listar($conexaodb)
+	function consulta($conexaodb, $orderBy)
 	{
+
 		// mysqli
 		//$consulta= $conexaodb->query("select * from PRODUTO") or die(mysqli_error($conexaodb));
 
@@ -86,7 +88,7 @@ use PDO;
 		//while ( $item = $consulta->fetch_assoc() )
 
 		// pdo
-		foreach ( $conexaodb->query("select * from PRODUTO order by id")->fetchAll(PDO::FETCH_ASSOC) as $item )
+		foreach ( $conexaodb->query("select * from PRODUTO {$orderBy}")->fetchAll(PDO::FETCH_ASSOC) as $item )
 		{ ?>
 				<input type=checkbox style="min-width: 10PX;" name=selecaoProdutos[] value=<?=$item['id']?>>
 			<form method=get style="display:inline-block;">
@@ -106,6 +108,17 @@ use PDO;
 	</form>
 
 <?php
+	
+	function listar($conexaodb)
+	{
+		consulta($conexaodb, "order by id");
+	}
+
+	function filtrar($conexaodb)
+	{
+		consulta($conexaodb, "where PRODUTO.nome ilike '{$_GET["produtoNome"]}%' order by PRODUTO.id");
+	}
+
 	if ( isset($_GET['excluirSelecaoProdutos']) )
 	{
 		foreach ( $_GET['selecaoProdutos'] as $selecionados )
@@ -167,9 +180,13 @@ use PDO;
 		if ( isset($_GET["produtoListar"]) )
 			\produto\listar($conexaodb);
 
+		if ( isset($_GET["produtoBuscar"]) )
+			\produto\filtrar($conexaodb);
+
 		//mysqli_close($conexaodb);
 	}
 ?>
+
 
 </body>
 </html>
